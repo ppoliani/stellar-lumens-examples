@@ -16,7 +16,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.17.1",
     "folktale": "^2.0.1",
     "stellar-sdk": "^0.8.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.14.11"
   }
 }
