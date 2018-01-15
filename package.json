@@ -1,0 +1,22 @@
+{
+  "name": "stellar-lumens-examples",
+  "version": "1.0.0",
+  "description": "Examples of interacting with stellar lumens",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "stellar",
+    "lumens",
+    "blockchain",
+    "digital",
+    "assets"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "folktale": "^2.0.1",
+    "stellar-sdk": "^0.8.0"
+  }
+}
