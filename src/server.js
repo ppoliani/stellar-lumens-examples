@@ -7,8 +7,9 @@ let _server = Maybe.Nothing();
 const createServer = () => _server.matchWith({
   Just: prop('value'),
   Nothing: () => {
-    _server = Maybe.Just(new StellarSdk.Server(process.env.HORIZON_URL));
-    return _server;
+    const server = new StellarSdk.Server(process.env.HORIZON_URL);
+    _server = Maybe.Just(server);
+    return server;
   }
 });
 

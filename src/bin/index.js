@@ -3,8 +3,12 @@ if(process.env.NODE_ENV === 'development') {
   require('dotenv').config({silent: true});
 }
 
+const StellarSdk = require('stellar-sdk');
 const {createKeypair, getPrivateKeyFromPair, getPubKeyFromPair} = require('../keyPair');
 const {createAccount, getAccount} = require('../account');
+const {send} = require('../transaction');
+
+StellarSdk.Network.useTestNetwork();
 
 const createNewPair = () => {
   const pair = createKeypair();
@@ -17,7 +21,7 @@ const createNewPair = () => {
 
 const createNewAccount = async pubKey => {
   try {
-    const newAccount = createAccount(process.env.DEFAULT_PUBKEY);
+    const newAccount = createAccount(pubKey);
   }
   catch(err) {
     console.error(err);
@@ -34,16 +38,13 @@ const getBalanceFor = async pubKey => {
   }
 }
 
+
 const run = async () => {
-  const pubKey = process.env.DEFAULT_PUBKEY;
+  const sourceKeys = StellarSdk.Keypair.fromSecret(process.env.DEFAULT_SECRET_KEY);
+  const destinationId = process.env.ACCOUNT_2_PUBKEY;
+  const result = await send(sourceKeys, process.env.ACCOUNT_2_PUBKEY, StellarSdk.Asset.native(), '5');
 
-  // await createAccount(pubKey);
-  const accountBalances = await getBalanceFor(pubKey);
-
-  accountBalances.forEach(balance  => {
-    console.log(`Type: ${balance.asset_type} \n Balance: ${balance.balance}`);
-  });
+  console.log(`TX Hash: ${result.hash}`);
 }
-
 
 run();

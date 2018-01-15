@@ -14,11 +14,7 @@ const createAccount = async pubKey => {
 
 const getAccount = async pubKey => {
   try {
-    const server = createServer()
-      .matchWith({
-        Just: prop('value'),
-        Nothing: () => console.error(`Error creating a server`)
-      });
+    const server = createServer();
     
     return await server.loadAccount(pubKey);
   }
