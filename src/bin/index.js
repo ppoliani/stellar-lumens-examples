@@ -5,9 +5,9 @@ if(process.env.NODE_ENV === 'development') {
 
 const StellarSdk = require('stellar-sdk');
 const {createKeypair, getPrivateKeyFromPair, getPubKeyFromPair, getKeys} = require('../keyPair');
-const {createAccount, getAccount} = require('../account');
-const {send} = require('../transaction');
-const {changeTrustAndSend} = require('../asset');
+const {createAccount, getAccount, burnAccount} = require('../account');
+const {sendAsset, submitTransaction, changeTrust} = require('../transaction');
+const {createAsset} = require('../asset');
 
 StellarSdk.Network.useTestNetwork();
 
@@ -39,19 +39,22 @@ const getBalanceFor = async pubKey => {
   }
 }
 
-
-const sendAsset = async () => {
-  const sourceKeys = getKeys(process.env.DEFAULT_SECRET_KEY);
-  const destinationId = process.env.ACCOUNT_2_PUBKEY;
-  const result = await send(sourceKeys, process.env.ACCOUNT_2_PUBKEY, StellarSdk.Asset.native(), '5');
-
-  console.log(`TX Hash: ${result.hash}`);
-}
-
-const createAsset = async () => {
+const createTrustline = async () => {
   const issuingKeys = getKeys(process.env.ISSUER_SECRET_KEY);
-  const receivingKeys = getKeys(process.env.DEFAULT_SECRET_KEY);
-  const result = await changeTrustAndSend('LabCoin', issuingKeys, receivingKeys);
+  const receivingKeys = getKeys(process.env.ACCOUNT_2_SECRET_KEY);
+  const LabCoin = createAsset('LabCoin', issuingKeys);
+  const result = await changeTrust(LabCoin, '1000000', receivingKeys);
 }
 
-createAsset();
+const sendLabCoin = async () => {
+  const issuingKeys = getKeys(process.env.ISSUER_SECRET_KEY);
+  const receivingKeys = getKeys(process.env.ACCOUNT_2_SECRET_KEY);
+  const LabCoin = createAsset('LabCoin', issuingKeys);
+  const issuer = await getAccount(issuingKeys.publicKey())
+  const sendTX = await sendAsset(issuingKeys, receivingKeys.publicKey(), LabCoin, '1000000');
+}
+
+(async () => {
+  createTrustline();
+  sendLabCoin();
+})();

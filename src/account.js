@@ -15,11 +15,28 @@ const createAccount = async pubKey => {
 const getAccount = async pubKey => {
   try {
     const server = createServer();
-    
     return await server.loadAccount(pubKey);
   }
   catch(err) {
     console.error(`An error happened while getting balance for account: ${err}`)
+  }
+}
+
+const burnAccount = async signingKeys => {
+  try {
+    const server = createServer();
+    const account = await server.loadAccount(signingKeys.publicKey());
+    const tx =  new StellarSdk.TransactionBuilder(account)
+      .addOperation(StellarSdk.Operation.setOptions({
+        masterWeight: 0,
+      }))
+      .build();
+
+    tx.sign(signingKeys);
+    
+  }
+  catch(err) {
+    console.error(`Error while burning the keys: ${err}`)
   }
 }
 
