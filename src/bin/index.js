@@ -4,9 +4,10 @@ if(process.env.NODE_ENV === 'development') {
 }
 
 const StellarSdk = require('stellar-sdk');
-const {createKeypair, getPrivateKeyFromPair, getPubKeyFromPair} = require('../keyPair');
+const {createKeypair, getPrivateKeyFromPair, getPubKeyFromPair, getKeys} = require('../keyPair');
 const {createAccount, getAccount} = require('../account');
 const {send} = require('../transaction');
+const {changeTrustAndSend} = require('../asset');
 
 StellarSdk.Network.useTestNetwork();
 
@@ -39,12 +40,19 @@ const getBalanceFor = async pubKey => {
 }
 
 
-const run = async () => {
-  const sourceKeys = StellarSdk.Keypair.fromSecret(process.env.DEFAULT_SECRET_KEY);
+const sendAsset = async () => {
+  const sourceKeys = getKeys(process.env.DEFAULT_SECRET_KEY);
   const destinationId = process.env.ACCOUNT_2_PUBKEY;
   const result = await send(sourceKeys, process.env.ACCOUNT_2_PUBKEY, StellarSdk.Asset.native(), '5');
 
   console.log(`TX Hash: ${result.hash}`);
 }
 
-run();
+const createAsset = async () => {
+  const issuingKeys = getKeys(process.env.ISSUER_SECRET_KEY);
+  const receivingKeys = getKeys(process.env.DEFAULT_SECRET_KEY);
+  const result = await changeTrustAndSend('LabCoin', issuingKeys, receivingKeys);
+  console.log('>>>>>>', result);
+}
+
+createAsset();
