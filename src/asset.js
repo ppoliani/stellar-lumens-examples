@@ -1,11 +1,6 @@
 const StellarSdk = require('stellar-sdk');
 const {createServer} = require('./server');
 
-const issueAsset = (symbol, issuingKeys) => {
-  const customAsset = new StellarSdk.Asset(symbol, issuingKeys.publicKey());
-  console.log('>>>>>>>>>');
-}
-
 const changeTrustAndSend = async (symbol, issuingKeys, receivingKeys) => {
   const customAsset = new StellarSdk.Asset(symbol, issuingKeys.publicKey());
   const server = createServer();
@@ -24,12 +19,12 @@ const changeTrustAndSend = async (symbol, issuingKeys, receivingKeys) => {
     tx.sign(receivingKeys);
     
     const result = await server.submitTransaction(tx);
-    const issuingAccount = await server.loadAccount(issuingKeys.publicKey())
+    const issuer = await server.loadAccount(issuingKeys.publicKey())
     const sendTX = new StellarSdk.TransactionBuilder(issuer)
       .addOperation(StellarSdk.Operation.payment({
         destination: receivingKeys.publicKey(),
         asset: customAsset,
-        amount: '10'
+        amount: '10000'
       }))
       .build();
 

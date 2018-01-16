@@ -52,7 +52,6 @@ const createAsset = async () => {
   const issuingKeys = getKeys(process.env.ISSUER_SECRET_KEY);
   const receivingKeys = getKeys(process.env.DEFAULT_SECRET_KEY);
   const result = await changeTrustAndSend('LabCoin', issuingKeys, receivingKeys);
-  console.log('>>>>>>', result);
 }
 
 createAsset();
