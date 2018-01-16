@@ -1,4 +1,5 @@
 const axios = require('axios');
+const StellarSdk = require('stellar-sdk');
 const {createServer} = require('./server');
 const {prop} = require('./fn');
 
@@ -33,11 +34,11 @@ const burnAccount = async signingKeys => {
       .build();
 
     tx.sign(signingKeys);
-    
+    return await server.submitTransaction(tx);
   }
   catch(err) {
     console.error(`Error while burning the keys: ${err}`)
   }
 }
 
-module.exports = {createAccount, getAccount};
+module.exports = {createAccount, getAccount, burnAccount};

@@ -40,21 +40,23 @@ const getBalanceFor = async pubKey => {
 }
 
 const createTrustline = async () => {
-  const issuingKeys = getKeys(process.env.ISSUER_SECRET_KEY);
-  const receivingKeys = getKeys(process.env.ACCOUNT_2_SECRET_KEY);
+  const issuingKeys = getKeys(process.env.ACCOUNT_2_SECRET_KEY);
+  const receivingKeys = getKeys(process.env.DEFAULT_SECRET_KEY);
   const LabCoin = createAsset('LabCoin', issuingKeys);
   const result = await changeTrust(LabCoin, '1000000', receivingKeys);
 }
 
 const sendLabCoin = async () => {
   const issuingKeys = getKeys(process.env.ISSUER_SECRET_KEY);
-  const receivingKeys = getKeys(process.env.ACCOUNT_2_SECRET_KEY);
+  const receivingKeys = getKeys(process.env.DEFAULT_SECRET_KEY);
   const LabCoin = createAsset('LabCoin', issuingKeys);
   const issuer = await getAccount(issuingKeys.publicKey())
-  const sendTX = await sendAsset(issuingKeys, receivingKeys.publicKey(), LabCoin, '1000000');
+  const sendTX = await sendAsset(issuingKeys, receivingKeys.publicKey(), LabCoin, '50');
 }
 
 (async () => {
-  createTrustline();
+  // createTrustline();
   sendLabCoin();
+  // burnAccount(getKeys(process.env.ISSUER_SECRET_KEY));
+
 })();
